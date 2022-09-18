@@ -1,0 +1,14 @@
+/* For the Projects Page*/
+.post-content dt ~ dt, .post-content dd ~ dd {
+    margin-top: 1.5rem;
+  }
+  .post-content dt em {
+    display: block;
+    text-align: left;
+  
+    font-size: 0.875rem;
+    font-weight: 400;
+    font-style: normal;
+  
+    color: var(--secondary);
+  }
