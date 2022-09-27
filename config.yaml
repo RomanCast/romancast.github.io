@@ -1,4 +1,4 @@
-baseURL: "https://personal-website-358c2.web.app/"
+baseURL: "https://romancast.github.io"
 title: Roman Castagné
 paginate: 5
 theme: PaperMod
@@ -119,11 +119,11 @@ menu:
   main:
     - identifier: about
       name: About
-      url: about/
+      url: /about/
       weight: 10
     - identifier: projects
       name: Projects
-      url: projects/
+      url: /projects/
       weight: 20
     # - identifier: example
     #   name: example.org
