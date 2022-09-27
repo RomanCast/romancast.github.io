@@ -12,3 +12,11 @@
   
     color: var(--secondary);
   }
+
+.post-content dt {
+  width: 35%;
+}
+
+.post-content dd {
+  width: 65%;
+}
