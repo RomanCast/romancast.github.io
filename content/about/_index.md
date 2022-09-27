@@ -1,7 +1,7 @@
 ---
 title: "About me"
 date: 2022-09-01T11:55:47+02:00
-draft: true
+# draft: false
 ---
 
 Hey ! I'm Roman, currently a PhD student in the <a href="https://almanach.inria.fr/index-en.html" target="_blank">ALMAnaCH team at Inria Paris</a>, a research team focused on Natural Language Processing. 

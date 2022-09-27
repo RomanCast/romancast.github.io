@@ -1,7 +1,8 @@
-baseURL: "https://localhost:1313/"
+baseURL: "https://personal-website-358c2.web.app/"
 title: Roman Castagné
 paginate: 5
 theme: PaperMod
+# Template : website of MrArkon
 
 enableRobotsTXT: true
 buildDrafts: false
@@ -118,11 +119,11 @@ menu:
   main:
     - identifier: about
       name: About
-      url: /about
+      url: about/
       weight: 10
     - identifier: projects
       name: Projects
-      url: /projects/
+      url: projects/
       weight: 20
     # - identifier: example
     #   name: example.org

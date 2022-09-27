@@ -1,7 +1,7 @@
 ---
 title: "Projects"
 date: 2022-09-01T11:55:47+02:00
-draft: true
+# draft: false
 ---
 
 Here are some of the projects I have been working on recently. You can find my full resume <a href="/pdf/Resume_Castagne.pdf" target="_blank">here</a>.
