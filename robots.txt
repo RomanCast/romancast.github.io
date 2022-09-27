@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: https://personal-website-358c2.web.app/sitemap.xml
+Sitemap: https://romancast.github.io/sitemap.xml
