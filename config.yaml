@@ -86,6 +86,8 @@ params:
       url: "https://github.com/RomanCast"
     - name: linkedin
       url: "https://linkedin.com/in/roman-castagné"
+    - name: googlescholar
+      url: "https://scholar.google.com/citations?view_op=list_works&hl=fr&hl=fr&user=PhqQF4AAAAAJ"
 
   cover:
     hidden: true # hide everywhere but not in structured data

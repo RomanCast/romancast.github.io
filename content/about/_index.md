@@ -23,6 +23,6 @@ I am also interested in studying the **time dynamics of a language model** :
 
 **Python** Almost all my projects are in Python. -->
 
-If you want to chat, feel free to reach out at : `roman [dot] castagne [at] gmail [dot] com`
+Feel free to reach out for a chat at : `roman [dot] castagne [at] gmail [dot] com` !
 <!-- ![png](/img/Inria-0376-318_sm_round.png) -->
 <!-- ![png](/img/Inria-0376-318_sm.jpg) -->

@@ -1,10 +1,16 @@
 ---
-title: "Projects"
+title: "Projects and papers"
 date: 2022-09-01T11:55:47+02:00
 # draft: false
 ---
 
 Here are some of the projects I have been working on recently. You can find my full resume <a href="/pdf/Resume_Castagne.pdf" target="_blank">here</a>.
+
+MANTa *Findings EMNLP (to appear)* *2022*
+: MANTa is a differentiable tokenization module which learns to segment input sequences end-to-end with the Language Model objective.
+
+<a href="https://arxiv.org/abs/2211.05100" target="_blank">BLOOM</a> *2022*
+: BLOOM is a Large Language Model resulting from a collaborative, open source effort. I actively participated in creating its tokenizer.
 
 <a href="https://camembert-model.fr/posts/tutorial/" target="_blank">Hands-on CamemBERT</a> *June 2022*
 : We gave a 3 hours-long tutorial on how to use and finetune CamemBERT, a French Language Model and turned it into a blogpost (in French).
