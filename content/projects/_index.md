@@ -6,7 +6,7 @@ date: 2022-09-01T11:55:47+02:00
 
 Here are some of the projects I have been working on recently. You can find my full resume <a href="/pdf/Resume_Castagne.pdf" target="_blank">here</a>.
 
-MANTa *Findings EMNLP (to appear)* *2022*
+<a href="https://hal.archives-ouvertes.fr/hal-03844262/document" target="_blank">MANTa</a> *Findings EMNLP (to appear)* *2022*
 : MANTa is a differentiable tokenization module which learns to segment input sequences end-to-end with the Language Model objective.
 
 <a href="https://arxiv.org/abs/2211.05100" target="_blank">BLOOM</a> *2022*
