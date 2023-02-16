@@ -113,7 +113,7 @@ params:
 menu:
   main:
     - identifier: about
-      name: About
+      name: About me
       url: about/
       weight: 10
     - identifier: projects
