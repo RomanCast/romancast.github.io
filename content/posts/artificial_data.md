@@ -5,7 +5,7 @@ date: 2023-02-14T00:00:00+02:00
 math: true
 ---
 
-According to Chinchilla scaling laws [[1]](#references), data may soon be a bottleneck for training really large English language models. The vast majority of languages already lack data for training even moderately sized networks.
+According to Chinchilla scaling laws for Transformers [[1]](#references), data may soon be a bottleneck for training really large English language models. The vast majority of languages already lack data for training even moderately sized networks.
 
 Thus, during the last few months, we experimented with the following question: what if we could pretrain Masked Language Models (MLM, think BERT or RoBERTa) using only **artificially created data**, then **continue pretraining on languages with very little resources**? Ideally, our synthetic data could be generated quickly and be scaled to extremely large sizes as well as have properties that allow the models to “learn something”.
 
@@ -14,23 +14,23 @@ Thus, during the last few months, we experimented with the following question: w
 
 > Yes, but how will it know what “New York” is?
 
-Obviously, the intent behind this work is not to replace entirely data, but rather to see if we can teach the networks to **learn some simple operations** before having to cope with semantics and meaning. Similar work was done for automatic summarization [[2]](#references), showing that teaching a model to perform a few basic operations using synthetic data (e.g. copy one line) almost matches the performance of a fully pretrained model.
+The intent behind this work is not to entirely replace language data, but rather to see whether we can teach the networks to **learn some simple operations** before having to cope with semantics and meaning. Similar work was done for automatic summarization [[2]](#references), showing that teaching a model to perform a few basic operations using synthetic data (e.g. copy one line) almost matches the performance of a fully pretrained model.
 
-A secondary objective to this work is to understand what features are learnt from the training data by language models, and how much are these features used when transferring to another language. Previous works [[3]](#references) have shown that it was possible to pre-train a model on a different modality than text (e.g. music) and still transfer to natural language with great performance. What exactly are the operations learnt that make this transfer possible ?
+A secondary objective of this work is to understand what features are learnt from the training data by language models, and how much are they used when transferring to another language. Previous works [[3]](#references) have shown that it was possible to pre-train a model on a different modality than text (e.g. music) and still transfer to natural language with great performance. What information is learnt that makes this transfer possible?
 
 ⚠️ **Disclaimer:** Our work falls into the "negative results" category. Nonetheless, we bumped into interesting questions and thought it would be nice to present our results informally here.
 
-*This work was done as part of my PhD supervised by Benoît Sagot and Eric de la Clergerie, funded by the PRAIRIE chair of Benoît Sagot.*
+*This work was done as part of my PhD supervised by Benoît Sagot and Éric de la Clergerie, funded by the PRAIRIE chair of Benoît Sagot.*
 
 # The Method
 
-We start by training Masked Language Models on "source" data, i.e. either natural language data or synthetic data. For all our experiments, we work with BERT-based models with 12 layers and hidden size 768, processing sequences of length at most 128. We use batches containing 256 samples and train for 100k steps with AdamW, using a linearly decaying learning rate of at most 1e-4 and a warmup for the first 10k steps. This is a modest setup in terms of training but it enables us to experiment new ideas pretty quickly.
+We start by training Masked Language Models on "source" data, i.e. either natural language data or synthetic data ([see below](#our-methods) for the description of our synthetic data). For all our experiments, we work with encoder models similar to BERT with 12 layers and hidden size 768, processing sequences of length at most 128. We use batches containing 256 samples and train for 100k steps with AdamW, using a linearly decaying learning rate of at most 1e-4 and a warmup for the first 10k steps. This is a modest setup in terms of training but it enables us to experiment with new ideas pretty quickly.
 
-We then train on a target language. We keep all the source parameters except the embeddings (our source language has no vocabulary overlap with the target language) and retrain using the same hyperparameters except for the batch size which we reduce to 128 samples. We usually stop training around 50k iterations to save compute because the models have already started overfitting at that point.
+We then continue training on a target language. We keep all the source parameters except the embeddings (our source language has no vocabulary overlap with the target language) and retrain using the same hyperparameters except for the batch size which we reduce to 128 samples. We usually stop training around 50k iterations to save compute because the models have already started overfitting at that point.
 
 <img src="/img/artificial_data/parts_trained.png">
 
-We use [OSCAR](https://oscar-project.org)'s subset of Breton as our low resource target language. It corresponds to around 5M tokens. In addition, Breton appears in the Wikiann NER dataset, which makes it possible to study finetuning setups.
+We use the Breton subset of [OSCAR](https://oscar-project.org) 21.09 as our low-resource target language. It corresponds to around 5M tokens. In addition, Breton appears in the Wikiann NER dataset, which makes it possible to study finetuning setups.
 
 We describe in the following section the source data we considered, including our synthetic language.
 
@@ -38,28 +38,18 @@ We describe in the following section the source data we considered, including ou
 
 # What we tried
 
-### The Baselines
-
-The Language Model representations are surprisingly robust to new modalities and languages. Thus, previous works have for instance recycled models to create new ones in languages with less data [[4]](#references) or added languages to multilingual models after training [[5]](#references). 
-
-Our baseline is similar. We use the same setting described earlier to train a model on English OSCAR data, then re-initialize its embeddings and retrain it on Breton data. This is a particularly efficient baseline compared to pretraining from scratch.
-
-As a control and to test the influence of the source language on the transfer, we train Language Models on Czech and Turkish. They belong to different language families than Breton, and thus have a different syntax.
-
-As we will see later, the three models (English, Czech and Turkish) transfer to Breton with almost the same accuracy, demonstrating a very moderate impact of the source language syntax on the final representations.
-
 ### Our methods
 
 We try to identify a few key characteristics in natural data that should appear in our artificial language as well.
 
-- **Structure**; natural data has a structure, whether it be images, text or sound. Since word embeddings are context independent, we hypothesize that the structure is mainly modelled with the Transformer layers and the positional embeddings and that we should be able to transfer it to the target language.
+- **Structure**; natural data has a structure, whether it be images, text or sound. Since word embeddings are context-independent, we hypothesize that the structure is mainly modelled with the Transformer layers and the positional embeddings and that we should be able to transfer it to the target language.
 - **Co-occurrence**; this is a very vague term encompassing a lot of higher concepts such as meaning. However, we think it may be important to learn making context-dependent decisions.
 
-In order to create artificial structure, we use dependency trees from the French GSD treebank to learn a Probabilistic Context Free Grammar (PCFG). Using this PCFG, we sample new trees that we linearize to form sequences. This process yields sequences of tags corresponding each to a dependency relation. 
+To create artificial structure, we use dependency trees from the French GSD treebank to learn a Probabilistic Context Free Grammar (PCFG). Using this PCFG, we sample new trees that we linearize to form sequences. This process yields sequences of tags corresponding each to a dependency relation. 
 
 <img src="/img/artificial_data/tree_generation.png">
 
-We then relexicalize these tags with items from a vocabulary chosen arbitrarily. We do not apply any other linguistically-inspired rules. Our goal is rather to construct data generated from an underlying structure than “natural sounding sentences”.
+We then relexicalize these tags with items from a vocabulary chosen arbitrarily. We do not apply any other linguistically-inspired rules. Our goal is rather to construct data generated from an underlying structure than “natural-sounding sentences”.
 
 Our first method for relexicalization (which we will call **PCFG+Zipf**) does not account for co-occurrences within sentences. We assign to each dependency relation a vocabulary size (computed using real statistics about that dependency relation) and a set of tokens of the corresponding size. We then relexicalize sequences of tags by drawing a token for each dependency relation from its set, using a Zipf law.
 
@@ -74,6 +64,16 @@ Intuitively, the words that are similar according to their (random) embeddings w
 
 For both methods, we generate a corpus of 1 million sentences, corresponding roughly to 15 million tokens. We use a total vocabulary size of 5000 elements and keep only the 20 most used dependency relations when constructing the PCFG.
 
+### The Baselines
+
+The Language Model representations are surprisingly robust to new modalities and languages. Thus, previous works have for instance recycled models to create new ones in languages with fewer data [[4]](#references) or added languages to multilingual models after training [[5]](#references). 
+
+Our baseline is similar. We use the same setting described earlier to train a model on English OSCAR data, then re-initialize its embeddings and retrain it on Breton data. This is a particularly efficient baseline compared to pretraining from scratch.
+
+As a control and to test the influence of the source language on the transfer, we train Language Models on Czech and Turkish. They belong to different language (sub)families than Breton and have different syntax.
+
+As we will see later, the three models (English, Czech and Turkish) transfer to Breton with almost the same accuracy, demonstrating a very moderate impact of the source language syntax on the final representations.
+
 ---
 
 # Results
@@ -84,11 +84,13 @@ The models trained on synthetic data **fail to significantly improve** on a mode
 
 {{< figure src="/img/artificial_data/accuracies.png" caption="Maximum evaluation accuracy on the Breton Masked Language Modelling task using each of the different source pretraining methods. The x-axis corresponds to the source pretraining data. \"From scratch\" was initialized randomly before the target pretraining." >}}
 
-In the following section, we look at a few questions that arised when trying to understand what may be the cause of the different transfer accuracies.
+In the following section, we look at a few questions that arose when trying to understand what may be the cause of the different transfer accuracies.
 
 ---
 
 # Analysis
+
+In the process of trying to design a better synthetic language and understanding the source of failure when transferring to a target (natural) language, we came across a few interesting questions and experiments that we detail here.
 
 ### How important are position embeddings in the transfer?
 
@@ -100,25 +102,25 @@ To test this effect, we reset the positional embeddings at the beginning of pret
 {{< figure src="/img/artificial_data/pos_vs_no_pos_embeddings.png" caption="Evaluation MLM accuracy during target pretraining on Breton using the English pretrained model." >}}
 
 
-We can see that re-initializing the positional embeddings only delays training for a few steps, but does not impact the final performance. The same effect appears for a model trained using the artificial data. From that experiment, we concluded that the Transformer layers are mostly responsible for the transfer to the target language.
+We can see that re-initializing the positional embeddings only delays training for a few steps, but does not impact the final performance. The same effect appears for a model trained using artificial data. From that experiment, we concluded that the Transformer layers are mostly responsible for the transfer to the target language.
 
 ### How different are the models trained with artificial data and natural language data?
 
-The models trained on different modalities transfer with very different accuracies to the target language. Can we identify some statistics in the model parameters that correlate with a better transfer performance? To answer this question, we looked at the mean, standard deviation and maximum parameter values of every layer and every module in our models. The average weight values give very little information, as both type of models (trained on natural or synthetic data) have similar statistics. 
+The models trained on different modalities transfer with very different accuracies to the target language. Can we identify some statistics in the model parameters that correlate with a better transfer performance? To answer this question, we looked at the mean, standard deviation and maximum parameter values of every layer and every module in our models. The average weight values give very little information, as both types of models (trained on natural or synthetic data) have similar statistics. 
 
-The standard deviations are quite different however. Despite being trained with the same hyperparameters, the models trained on natural data exhibit larger standard deviations than the models trained on artificial data, which stay closer to the standard deviation set at initialization. The following graph shows the standard deviations of weights and biases from every module.
+The standard deviations are quite different, however. Despite being trained with the same hyperparameters, the models trained on natural data exhibit larger standard deviations than the models trained on artificial data, which stay closer to the standard deviation set at initialization. The following graph shows the standard deviations of weights and biases from every module.
 
 {{< figure src="/img/artificial_data/standard_dev_params.png" caption="Standard deviations of each module parameter values. The x-axis corresponds to the layer being studied, and \"random\" corresponds to a randomly initialized (un-trained) model." >}}
 
-Are higher standard deviations a key to transfer performance, or merely an artifact of natural language pretraining? This question remains unclear, yet these statistics hint at a possible issue with the artificial model. Indeed, since its parameters do not deviate by a lot from their original values, the task may be learnt by something else than the Transformer layers.
+Are higher standard deviations a key to transfer performance, or merely an artefact of natural language pretraining? The answer to this question remains unclear, yet these statistics hint at a possible issue with the artificial model. Indeed, since its parameters do not deviate by a lot from their original values, the task may be learnt by something else than the Transformer layers.
 
 ### Is the artificial task learnt only in the embeddings?
 
 We take a look at the word embeddings of the PCFG+Zipf model by projecting them on a 2D space using a PCA. 
 
-{{< figure src="/img/artificial_data/embeddings_pca.png" caption="PCA projection on a 2D plane of the word embeddings from the artificial model. Each point has a color corresponding to its dependency relation tag. Some cluster are larger than others, because the number of vocabulary elements assigned to a dependency relation is a function of the number of unique lemmas corresponding to that relation in the real data." >}}
+{{< figure src="/img/artificial_data/embeddings_pca.png" caption="PCA projection on a 2D plane of the word embeddings from the artificial model. Each point has a color corresponding to its dependency relation tag. Some clusters are larger than others because the number of vocabulary elements assigned to a dependency relation is a function of the number of unique lemmas corresponding to that relation in the real data." >}}
 
-As we can see, the embeddings are pretty well clustered by dependency relations. This is expected in part, because knowing precisely what relations surround a masked token is the only way to predict correctly the masked dependency relation. However, we want the model to rely on the Transformer layers rather than the embeddings to solve the task since we throw away the embeddings at the end of the artificial pretraining.
+As we can see, the embeddings are pretty well clustered by dependency relations. This is expected in part because knowing precisely what relations surround a masked token is the only way to predict correctly the masked dependency relation. However, we want the model to rely on the Transformer layers rather than the embeddings to solve the task since we throw away the embeddings at the end of the artificial pretraining.
 
 To enforce this behaviour, we retrain our model on artificial data but freeze the embeddings during pretraining, forcing the model to rely entirely on the position embeddings, Transformer layers and language modeling head. Interestingly, the resulting model parameter values have slightly higher standard deviations than before, indicating that it may be the Transformer layers taking over to solve the task. However, the target pretraining on Breton leads to the same accuracy as before. 
 
