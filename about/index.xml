@@ -4,10 +4,6 @@
     <title>About me on Roman Castagné</title>
     <link>https://romancast.github.io/about/</link>
     <description>Recent content in About me on Roman Castagné</description>
-    <image>
-      <url>https://romancast.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://romancast.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
-    </image>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Thu, 01 Sep 2022 11:55:47 +0200</lastBuildDate><atom:link href="https://romancast.github.io/about/index.xml" rel="self" type="application/rss+xml" />
   </channel>

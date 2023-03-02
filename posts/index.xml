@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Roman Castagné</title>
-    <link>https://romancast.github.io/</link>
-    <description>Recent content on Roman Castagné</description>
+    <title>Posts on Roman Castagné</title>
+    <link>https://romancast.github.io/posts/</link>
+    <description>Recent content in Posts on Roman Castagné</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 14 Feb 2023 00:00:00 +0200</lastBuildDate><atom:link href="https://romancast.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 14 Feb 2023 00:00:00 +0200</lastBuildDate><atom:link href="https://romancast.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Artificial Pretraining of Masked Language Models</title>
       <link>https://romancast.github.io/posts/artificial_data/</link>
